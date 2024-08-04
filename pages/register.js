@@ -5,7 +5,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase/firebase_api";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import Spinner from "@/components/Spinner";
-import { useRouter } from "next/router";
+import { Router, useRouter } from "next/router";
 import { useAuth } from "@/firebase/auth";
 
 const provider = new GoogleAuthProvider();
@@ -23,7 +23,7 @@ const RegisterForm = () => {
     if (!isLoading && authUser) {
       router.push("/");
     }
-  }, [isLoading, authUser]);
+  }, [isLoading, authUser, router]);
 
   const signUpHandler = async () => {
     setError("");

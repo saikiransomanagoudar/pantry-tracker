@@ -32,7 +32,7 @@ export default function Home() {
     } else {
       updateInventory();
     }
-  }, [isLoading, authUser]);
+  }, [isLoading, authUser, router]);
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, "pantry-tracker"));

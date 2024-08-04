@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { onAuthStateChanged, signOut as authSignOut } from "firebase/auth";
 import { auth } from "./firebase_api";
+import Router from "next/router";
 
 const AuthUserContext = createContext({
   authUser: null,
