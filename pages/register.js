@@ -2,19 +2,39 @@ import { FcGoogle } from "react-icons/fc";
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from '../firebase/firebase_api'
+import { auth } from '../firebase/firebase_api';
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
+const provider = new GoogleAuthProvider();
 
 const RegisterForm = () => {
   const [name, setName] = useState(null)
   const [email, setEmail] = useState(null)
   const [password, setPassword] = useState(null)
+  const [error, setError] = useState(null);
 
   const signUpHandler = async () => {
-    if (!name || !email || !password) return;
+    setError('');
+    if (!name || !email || !password) {
+      setError("All fields are required.");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password should be at least 6 characters.");
+    }
     try {
       const {user} = await createUserWithEmailAndPassword(auth, email, password)
       await updateProfile(auth.currentUser, {displayName: name})
-      console.log(user)
+      console.log("User created:", user)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const signInWithGoogle = async () => {
+    // if (!name || !email || !password) return;
+    try {
+      const user = await signInWithPopup(auth, provider)
       console.log(user)
     } catch (error) {
       console.error(error)
@@ -32,11 +52,12 @@ const RegisterForm = () => {
               Login
             </Link>
           </p>
+          {error && <div className="text-red-500">{error}</div>}
           <div
             className="bg-black/[0.05] text-white w-full py-4 mt-10 rounded-full 
           transition-transform hover:bg-black/[0.8] active: scale-80 
           flex justify-center items-center gap-4 cursor-pointer"
-          >
+          onClick={signInWithGoogle}>
             <FcGoogle size={22} />
             <span className="font-medium text-black group-hover:text-white">
               Login with Google
