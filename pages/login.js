@@ -74,7 +74,7 @@ const LoginForm = () => {
         <div className="p-8 w-full flex flex-col items-center">
           <h2 className="text-6xl font-semibold">Login</h2>
           <p className="mt-6">
-            Don't have an account?
+            Don&apos;t have an account?{" "}
             <Link
               href={"/register"}
               className="underline hover:text-blue-400 cursor-pointer"
