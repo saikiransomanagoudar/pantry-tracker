@@ -76,7 +76,7 @@ export default function Home() {
 
     if (filteredResults.length > 0) {
       const resultsDisplay = filteredResults
-        .map((item) => `${item.name} - Quantity: ${item.quantity}`)
+        .map((item) => `${searchTerm} - Quantity: ${item.quantity}`)
         .join(", ");
       setSearchMessage(
         `${filteredResults.length} items found: ${resultsDisplay}`
