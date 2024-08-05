@@ -15,14 +15,19 @@ import {
   getDocs,
   query,
   getDoc,
+  where,
   setDoc,
 } from "firebase/firestore";
 
 export default function Home() {
   const { authUser, isLoading, signOut } = useAuth();
-  const [inventory, setInventory] = useState([]);
+  // const [inventory, setInventory] = useState([]);
+  const [fullInventory, setFullInventory] = useState([]);
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchMessage, setSearchMessage] = useState("");
+  const searchRef = useRef(null);
 
   const router = useRouter();
 
@@ -30,53 +35,103 @@ export default function Home() {
     if (!isLoading && !authUser) {
       router.push("/login");
     } else {
-      updateInventory();
+      loadInitialInventory();
     }
   }, [isLoading, authUser, router]);
 
-  const updateInventory = async () => {
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchMessage(""); // Clear the search message if clicked outside
+      }
+    };
+
+    // Add when the component mounts
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Remove when the component unmounts
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [searchRef]);
+
+  const loadInitialInventory = async () => {
     const snapshot = query(collection(firestore, "pantry-tracker"));
     const docs = await getDocs(snapshot);
-    const inventoryList = [];
-    docs.forEach((doc) => {
-      const data = doc.data();
-      if (data && typeof data.quantity === "number") {
-        inventoryList.push({
-          name: doc.id,
-          quantity: data.quantity,
-        });
-      }
-    });
-    setInventory(inventoryList);
+    const inventoryList = docs.docs.map((doc) => ({
+      name: doc.id,
+      quantity: doc.data().quantity,
+    }));
+    setFullInventory(inventoryList);
+  };
+
+  const handleSearch = () => {
+    if (!searchTerm.trim()) {
+      setSearchMessage("Please enter a search term.");
+      return;
+    }
+    const searchTermLower = searchTerm.trim().toLowerCase();
+    const filteredResults = fullInventory.filter((item) =>
+      item.name.toLowerCase().includes(searchTermLower)
+    );
+
+    if (filteredResults.length > 0) {
+      const resultsDisplay = filteredResults
+        .map((item) => `${item.name} - Quantity: ${item.quantity}`)
+        .join(", ");
+      setSearchMessage(
+        `${filteredResults.length} items found: ${resultsDisplay}`
+      );
+    } else {
+      setSearchMessage(`No items found for '${searchTerm}'`);
+    }
   };
 
   const addItem = async (item) => {
     if (!item.trim()) return;
-    const docRef = doc(collection(firestore, "pantry-tracker"), item);
+    const newItem = item.trim().toLowerCase();
+    const docRef = doc(collection(firestore, "pantry-tracker"), newItem);
     const docSnap = await getDoc(docRef);
+
     if (docSnap.exists()) {
       const data = docSnap.data();
-      if (data && typeof data.quantity === "number") {
-        await setDoc(docRef, { quantity: data.quantity + 1 });
-      }
+      const newQuantity = data.quantity + 1;
+      await setDoc(docRef, { ...data, quantity: newQuantity });
+      // Update fullInventory directly
+      setFullInventory((prev) =>
+        prev.map((i) =>
+          i.name === newItem ? { ...i, quantity: newQuantity } : i
+        )
+      );
     } else {
-      await setDoc(docRef, { quantity: 1 });
+      const newData = { name: newItem, searchName: newItem, quantity: 1 };
+      await setDoc(docRef, newData);
+      // Add new item to fullInventory
+      setFullInventory((prev) => [...prev, { name: newItem, quantity: 1 }]);
     }
-    updateInventory();
   };
 
   const removeItem = async (item) => {
-    const docRef = doc(collection(firestore, "pantry-tracker"), item);
+    const newItem = item.trim().toLowerCase();
+    const docRef = doc(collection(firestore, "pantry-tracker"), newItem);
     const docSnap = await getDoc(docRef);
+
     if (docSnap.exists()) {
       const data = docSnap.data();
-      if (data && typeof data.quantity === "number" && data.quantity > 1) {
-        await setDoc(docRef, { quantity: data.quantity - 1 });
+      if (data.quantity > 1) {
+        const newQuantity = data.quantity - 1;
+        await setDoc(docRef, { ...data, quantity: newQuantity });
+        // Update fullInventory to reflect this change
+        setFullInventory((prev) =>
+          prev.map((i) =>
+            i.name === newItem ? { ...i, quantity: newQuantity } : i
+          )
+        );
       } else {
         await deleteDoc(docRef);
+        // Remove the item from fullInventory
+        setFullInventory((prev) => prev.filter((i) => i.name !== newItem));
       }
     }
-    updateInventory();
   };
 
   const handleOpen = () => setOpen(true);
@@ -96,6 +151,26 @@ export default function Home() {
         <GoSignOut size={15} />
         <span>Logout</span>
       </div>
+      <Stack
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        sx={{ width: "auto", padding: 2 }}
+      >
+        <TextField
+          label="Search Items"
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          size="small" // Optional: Adjust the size to fit better with the button
+        />
+        <Button variant="contained" color="primary" onClick={handleSearch}>
+          SEARCH
+        </Button>
+      </Stack>
+      <Typography variant="h6" sx={{ mt: 2 }}>
+        {searchMessage}
+      </Typography>
       <Box
         width="100vw"
         height="100vh"
@@ -160,8 +235,8 @@ export default function Home() {
             </Typography>
           </Box>
           <Stack width="800px" height="300px" spacing={2} overflow="auto">
-            {inventory.length > 0
-              ? inventory.map(({ name, quantity }) => (
+            {fullInventory.length > 0
+              ? fullInventory.map(({ name, quantity }) => (
                   <Box
                     key={name}
                     width="100%"
