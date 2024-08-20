@@ -8,7 +8,6 @@ Welcome to the Pantry Tracker! This full-stack application helps you manage your
 - **Pantry Management:** Add, update, and delete pantry items with details such as quantity, category, and expiration date.
 - **Responsive Design:** A clean and responsive user interface built with TailwindCSS, ensuring usability across devices.
 - **Real-Time Database:** Items are stored and retrieved in real-time using Firebase, allowing users to manage their pantry seamlessly.
-- **Notifications:** Get alerts for items that are nearing their expiration date.
 
 ## Technology Stack
 
