@@ -55,5 +55,4 @@ Ensure you have the following installed:
 
    ```bash
    npm install
-   
 
