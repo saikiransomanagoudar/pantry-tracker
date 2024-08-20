@@ -45,7 +45,6 @@ Ensure you have the following installed:
    ```bash
    git clone https://github.com/saikiransomanagoudar/pantry-tracker.git
 
-
 2. Navigate to the project directory:
 
    ```bash
