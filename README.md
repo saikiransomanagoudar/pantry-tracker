@@ -1,40 +1,59 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Pantry Tracker
+
+Welcome to the Pantry Tracker! This full-stack application helps you manage your pantry by tracking the inventory of items you have, their quantities. The app is built with Next.js, TailwindCSS, Firebase, and Node.js, and it includes authentication features to manage different user accounts.
+
+## Features
+
+- **User Authentication:** Secure user sign-up and sign-in using Firebase authentication.
+- **Pantry Management:** Add, update, and delete pantry items with details such as quantity, category, and expiration date.
+- **Responsive Design:** A clean and responsive user interface built with TailwindCSS, ensuring usability across devices.
+- **Real-Time Database:** Items are stored and retrieved in real-time using Firebase, allowing users to manage their pantry seamlessly.
+- **Notifications:** Get alerts for items that are nearing their expiration date.
+
+## Technology Stack
+
+- **Front-End:**
+  - Next.js: React framework for server-side rendering and static site generation.
+  - TailwindCSS: Utility-first CSS framework for styling.
+  - JavaScript: Programming language for building interactive user interfaces.
+
+- **Back-End:**
+  - Node.js: JavaScript runtime for executing server-side code.
+  - Firebase: Backend-as-a-Service (BaaS) for authentication, real-time database, and hosting.
+  - Firestore: Cloud Firestore is used as the real-time database to store and manage pantry data.
+
+- **Other Tools:**
+  - Git: Version control system for tracking changes and collaborating with others.
+  - Vercel: Hosting platform for deploying the Next.js application.
+  - npm: Package manager for Node.js libraries and dependencies.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Ensure you have the following installed:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Node.js (v14.x or later)
+- npm (v6.x or later)
+- Firebase account for authentication and database
+- A modern web browser
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+### Installation
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+1. Clone the repository:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+   ```bash
+   git clone https://github.com/saikiransomanagoudar/pantry-tracker.git
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+2. Navigate to the project directory:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   cd pantry-tracker
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Install the required dependencies:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   ```bash
+   npm install
+   
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
